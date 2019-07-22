@@ -10,10 +10,11 @@
 
 (defn home-page
   [request]
-  (let [sqs-client (:sqs-client request)]
+  (let [sqs-client (:sqs-client request)
+        queues (:queues request)]
     (messaging/send-message!
       sqs-client
-      (queue/get-queue-id sqs-client "bar-queue")
+      (get queues "bar-queue")
       (messaging/to-json {:example "example"}))
     (ring-resp/response "Hello from pedestal.sqs!")))
 
@@ -38,7 +39,7 @@
 
 (defn foo-listener
   [{:keys [message]}]
-  (prn (:Body message)))
+  (prn message))
 
 (defn bar-listener
   [{:keys [message]}]
